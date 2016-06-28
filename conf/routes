@@ -10,4 +10,4 @@ GET     /                           controllers.Application.index
 GET     /hello.html                 controllers.Assets.at(path="/public/Html",file="MainView.html")
 POST    /storeData                  controllers.Application.storeData
 GET     /getData                    controllers.Application.getData
-    
+GET     /DisplayRoll/*roll          controllers.Application.show(roll)

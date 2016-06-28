@@ -1,5 +1,6 @@
 package objects;
 
+import buisnessLogic.EncryptionDecryption.EncryptDecrypt;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,11 +35,10 @@ public class StudentBo {
         return bo;
     }
 
-    public static StudentBo setDetailsBo(JSONObject studentDetails) throws JSONException{
+    public static StudentBo setDetailsBo(StudentDto dto){
         StudentBo bo = new StudentBo();
-        bo.setName(studentDetails.get("Name").toString());
-        bo.setRoll(studentDetails.get("roll").toString());
-        bo.setGrade(studentDetails.get("college").toString());
+        bo.setName(dto.getName());
+        bo.setGrade(dto.getCollege());
         return bo;
     }
 
@@ -47,6 +47,13 @@ public class StudentBo {
         StudentBo bo = new StudentBo();
         bo.setRoll(studentGrades.get("roll").toString());
         bo.setGrade(studentGrades.get("grades").toString());
+        return bo;
+    }
+
+    public static StudentBo getGradeBo(StudentDto dto){
+        StudentBo bo = new StudentBo();
+        bo.setRoll(dto.getRoll());
+        bo.setName(dto.getName());
         return bo;
     }
 }

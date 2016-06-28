@@ -15,3 +15,5 @@ resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 libraryDependencies += jdbc
 
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.5"
+
+libraryDependencies += "org.json" % "org.json" % "chargebee-1.0"

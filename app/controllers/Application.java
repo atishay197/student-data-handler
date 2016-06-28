@@ -1,8 +1,13 @@
 package controllers;
 
+import buisnessLogic.EncryptionDecryption.EncryptDecrypt;
+import buisnessLogic.registerStudent;
 import com.fasterxml.jackson.databind.JsonNode;
+import objects.StudentBo;
+import objects.StudentDto;
+import org.json.JSONException;
+import org.json.JSONObject;
 import play.mvc.*;
-import static database.DatabaseInsert.storeStudentData;
 
 public class Application extends Controller {
 
@@ -11,23 +16,22 @@ public class Application extends Controller {
         return redirect("/hello.html");
     }
 
-    public static Result storeData() {
+    public static Result storeData(StudentDto studentDto) throws JSONException {
         System.out.println("Called storeData class");
-        JsonNode recievedData = request().body().asJson();
-        if (recievedData == null) {
-            return badRequest("Expceting some data");
+        JsonNode obj = request().body().asJson();
+        if(obj != null) {
+            System.out.println("OBJ : " + obj.toString());
         }
-        else{
-            String name = recievedData.findPath("name").asText();
-            String roll = recievedData.findPath("roll").asText();
-            String college = recievedData.findPath("college").asText();
-            String response = "Name : " + name + " Roll : " + roll + " College : " + college;
-            String redirectURL = recievedData.findPath("redirect").asText();
-            System.out.println("Recieved Data : " + response);
-            System.out.println("Recieved Data : " + redirectURL + " ");
-            storeStudentData(name,roll,college);
-            return redirect(redirectURL);
+        else {
+            System.out.println("obj empty");
         }
+        String student = "{\"name\" : \"Shyam\",\"college\" : \"NIT-K\",\"redirectURL\" : \"/DisplayRoll\"}";
+        JSONObject studentJSON = new JSONObject(student);
+        String redirectURL = studentJSON.get("redirectURL").toString();
+        //StudentDto dto = new StudentDto(studentJSON);
+        StudentDto dto = registerStudent.register(studentDto);
+        String roll = registerStudent.getRoll(dto);
+        return redirect(redirectURL+"/"+roll);
     }
 
     public static Result getData() {
@@ -35,4 +39,9 @@ public class Application extends Controller {
         return ok("testClass was called");
     }
 
+    public static Result show(String roll) {
+        response().setContentType("text/html");
+        String content = "Your Roll number is : " + roll + "<br>This will not be displayed again";
+        return ok(content);
+    }
 }
