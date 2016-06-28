@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send Requests</title>
+</head>
+<body>
+<form action="http://localhost:9000/storeData" enctype='application/json' method="POST">
+    Name    : <input name="name" value="Test"><br>
+    Roll    : <input name="roll" value="15"><br>
+    College : <input name="college" value="Manipal"><br>
+    <input type="hidden" name="redirect" value="/hello.html" />
+    <button>Store Data</button>
+</form>
+<form action="http://localhost:9000/getData" method="GET">
+    <button>Get Data</button>
+</form>
+</body>
+</html>
