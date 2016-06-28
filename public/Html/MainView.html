@@ -3,15 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Send Requests</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
+
+<script language="JavaScript" type="text/javascript" src="js/custom.js">
+    function submitform() {
+        var formData = JSON.stringify($("form.storeData").serializeArray());
+        console.log(formData);
+        var xhr = new XMLHttpRequest();
+        xhr.open(form.method, form.action, true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        xhr.send(JSON.stringify(formData));
+    }
+</script>
+
 <body>
-<form action="http://localhost:9000/storeData" enctype='application/json' method="POST">
+<form class=storeData action="http://localhost:9000/storeData" enctype="app" method="POST">
     Name    : <input name="name" value="Test"><br>
     Roll    : <input name="roll" value="15"><br>
     College : <input name="college" value="Manipal"><br>
     <input type="hidden" name="redirect" value="/hello.html" />
-    <button>Store Data</button>
+    <button onclick="submitform()">
+        Store Data
+    </button>
 </form>
+
 <form action="http://localhost:9000/getData" method="GET">
     <button>Get Data</button>
 </form>
