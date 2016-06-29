@@ -1,0 +1,36 @@
+@(detail: String, URL: String)
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+        <meta charset="UTF-8">
+        <title>Details</title>
+    </head>
+
+
+    <body onload="getData()">
+        <script>
+                function getData() {
+                    var json = @Html(detail);
+                    var objJSON = JSON.parse(JSON.stringify(json));
+                    var result = document.getElementById("result");
+                    for(var key in objJSON){
+                        var string = key + ' : '+ objJSON[key];
+                        var para = document.createElement("p");
+                        var node = document.createTextNode(string);
+                        para.appendChild(node);
+                        var child = document.getElementById("this");
+                        result.insertBefore(para,child);
+                    }
+                }
+        </script>
+
+        <div id="result">
+
+            <div  id="this">
+                <a href=@URL>
+                    <button>Return</button>
+                </a>
+            </div>
+        </div>
+    </body>
+</html>

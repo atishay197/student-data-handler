@@ -3,6 +3,9 @@ package objects;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by atishay197 on 6/28/16.
  */
@@ -37,8 +40,18 @@ public class StudentDto {
         this.grade = "";
     }
     public StudentDto(JSONObject studentDetails) throws JSONException{
-        this.name = studentDetails.get("name").toString();
-        this.college = studentDetails.get("college").toString();
+        if(studentDetails.has("name")) {
+            this.name = studentDetails.get("name").toString();
+        }
+        if(studentDetails.has("college")) {
+            this.college = studentDetails.get("college").toString();
+        }
+        if(studentDetails.has("roll")) {
+            this.roll = studentDetails.get("roll").toString();
+        }
+        if(studentDetails.has("grade")) {
+            this.grade = studentDetails.get("grade").toString();
+        }
     }
 
     public StudentDto(StudentBo bo){
@@ -48,5 +61,13 @@ public class StudentDto {
         this.grade = bo.getGrade();
     }
 
+    public static JSONObject dtoToJSON(StudentDto dto){
+        Map<String,String> m = new HashMap();
+        m.put("name",dto.getName());
+        m.put("college",dto.getCollege());
+        m.put("roll",dto.getRoll());
+        m.put("grade",dto.getGrade());
+        return (new JSONObject(m));
+    }
 
 }

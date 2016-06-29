@@ -1,8 +1,6 @@
 package database;
 
 import objects.StudentBo;
-import objects.StudentDto;
-import play.api.mvc.Result;
 import play.db.DB;
 
 import java.sql.Connection;
@@ -45,12 +43,18 @@ public class DatabaseFetch {
         }finally {
             closeEverything(rs,connection,stmt);
         }
+        connection = DB.getConnection();
+        stmt = null;
+        rs = null;
         try {
             stmt = connection.prepareStatement(FETCH_STUDENT_GRADE);
             stmt.setString(1, bo.getRoll());
             rs = stmt.executeQuery();
             if(rs.next()) {
-                bo.setCollege(rs.getString("Grade"));
+                bo.setGrade(rs.getString("Grade"));
+            }
+            else{
+                bo.setGrade("Not Graded");
             }
         }
         catch(Exception e){

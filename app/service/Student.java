@@ -30,8 +30,8 @@ public class Student {
             e.printStackTrace();
         }
         String encryptedRoll = EncryptDecrypt.encrypt(bo.getRoll());
-        dto.setRoll(encryptedRoll);
         dto = new StudentDto(bo);
+        dto.setRoll(encryptedRoll);
         return dto;
     }
 }
