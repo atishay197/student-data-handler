@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import play.mvc.*;
 
+import java.util.Collection;
+
 public class Application extends Controller {
 
 
@@ -16,20 +18,19 @@ public class Application extends Controller {
         return redirect("/hello.html");
     }
 
-    public static Result storeData(StudentDto studentDto) throws JSONException {
+    public static Result storeData() throws JSONException {
         System.out.println("Called storeData class");
         JsonNode obj = request().body().asJson();
-        if(obj != null) {
+        if(obj != null)
             System.out.println("OBJ : " + obj.toString());
-        }
-        else {
+        else
             System.out.println("obj empty");
-        }
-        String student = "{\"name\" : \"Shyam\",\"college\" : \"NIT-K\",\"redirectURL\" : \"/DisplayRoll\"}";
+        String redirectURL = request().getHeader("referer");
+        System.out.println("Request Header : " + redirectURL);
+        String student = "{\"name\" : \"Shyam\",\"college\" : \"NIT-K\"}";
         JSONObject studentJSON = new JSONObject(student);
-        String redirectURL = studentJSON.get("redirectURL").toString();
-        //StudentDto dto = new StudentDto(studentJSON);
-        StudentDto dto = registerStudent.register(studentDto);
+        StudentDto dto = new StudentDto(studentJSON);
+        dto = registerStudent.register(dto);
         String roll = registerStudent.getRoll(dto);
         return redirect(redirectURL+"/"+roll);
     }

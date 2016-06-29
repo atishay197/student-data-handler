@@ -8,26 +8,45 @@
 <body>
 <script>
     function submitform() {
-        var formData = JSON.stringify($("form").serializeArray());
-        console.log(formData);
+        var fields = {};
+        $("form.submit").find(":input").each(function() {
+            fields[this.name] = $(this).val();
+        });
+        console.log(fields);
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "http://localhost:9000/storeData", true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        xhr.send(JSON.stringify(formData));
+        xhr.send(JSON.stringify(fields));
     }
 </script>
-<form>
-    Name    : <input name="name" value="Test"><br>
-    Roll    : <input name="roll" value="15"><br>
-    College : <input name="college" value="Manipal"><br>
-    <input type="hidden" name="redirect" value="/hello.html" />
-    <button onclick="submitform()">
-        Store Data
-    </button>
-</form>
+New Student
+<br>
+        <form class = "submit">
+            Name&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<input name="name" value="Test"><br>
+            Roll&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<input name="roll" value="15"><br>
+            College&nbsp;:&nbsp;<input name="college" value="Manipal"><br>
+            <button onclick="submitform()">
+                Store Data
+            </button>
+        </form>
+<br>
+<br>
+Student Details
+<br>
+        <form class = "getData">
+            Name&nbsp;:&nbsp;<input name="name" value="Test"><br>
+            Roll&nbsp;:&nbsp;<input name="roll" value="15"><br>
+            <button onclick="getData()">Get Data</button>
+        </form>
+<br>
+<br>
+Teacher Grading
+<br>
+        <form class = "teacher">
+            TeacherID&nbsp;:&nbsp;<input name="name" value="Test"><br>
+            Roll&nbsp;&nbsp;&nbsp;:&nbsp;<input name="roll" value="15"><br>
+            <button onclick="submitGrade()">Grade Student</button>
+        </form>
 
-<form action="http://localhost:9000/getData" method="GET">
-    <button>Get Data</button>
-</form>
 </body>
 </html>
