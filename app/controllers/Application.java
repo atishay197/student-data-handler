@@ -1,15 +1,11 @@
 package controllers;
 
-import buisnessLogic.EncryptionDecryption.EncryptDecrypt;
-import buisnessLogic.registerStudent;
 import com.fasterxml.jackson.databind.JsonNode;
-import objects.StudentBo;
 import objects.StudentDto;
 import org.json.JSONException;
 import org.json.JSONObject;
 import play.mvc.*;
 
-import java.util.Collection;
 
 public class Application extends Controller {
 
@@ -19,20 +15,20 @@ public class Application extends Controller {
     }
 
     public static Result storeData() throws JSONException {
-        System.out.println("Called storeData class");
         JsonNode obj = request().body().asJson();
-        if(obj != null)
-            System.out.println("OBJ : " + obj.toString());
-        else
-            System.out.println("obj empty");
         String redirectURL = request().getHeader("referer");
-        System.out.println("Request Header : " + redirectURL);
-        String student = "{\"name\" : \"Shyam\",\"college\" : \"NIT-K\"}";
-        JSONObject studentJSON = new JSONObject(student);
-        StudentDto dto = new StudentDto(studentJSON);
-        dto = registerStudent.register(dto);
-        String roll = registerStudent.getRoll(dto);
-        return redirect(redirectURL+"/"+roll);
+        JSONObject requestJSON;
+        if(obj != null) {
+            requestJSON = new JSONObject(obj.toString());
+            StudentDto dto = new StudentDto(requestJSON);
+            dto = registerStudent.register(dto);
+            String roll = dto.getRoll();
+            return redirect(redirectURL+"/"+roll);
+        }
+        else{
+            System.out.println("Post Request is empty");
+            return badRequest("JSON is empty");
+        }
     }
 
     public static Result getData() {

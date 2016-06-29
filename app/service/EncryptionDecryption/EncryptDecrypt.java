@@ -1,4 +1,4 @@
-package buisnessLogic.EncryptionDecryption;
+package service.EncryptionDecryption;
 
 /**
  * Created by atishay197 on 6/28/16.

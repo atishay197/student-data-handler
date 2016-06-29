@@ -1,6 +1,5 @@
 package objects;
 
-import buisnessLogic.EncryptionDecryption.EncryptDecrypt;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,14 +30,24 @@ public class StudentBo {
         bo.setName(rsDetails.getString("Name"));
         bo.setRoll(rsDetails.getString("Roll"));
         bo.setCollege(rsDetails.getString("College"));
-        bo.setGrade(rsGrade.getString("Grade").toString());
+        bo.setGrade(rsGrade.getString("Grade"));
         return bo;
     }
 
-    public static StudentBo setDetailsBo(StudentDto dto){
+    public static StudentBo copyDtoToBo(StudentDto dto){
         StudentBo bo = new StudentBo();
-        bo.setName(dto.getName());
-        bo.setGrade(dto.getCollege());
+        if(dto.getName() != null) {
+            bo.setName(dto.getName());
+        }
+        if(dto.getCollege() != null) {
+            bo.setCollege(dto.getCollege());
+        }
+        if(dto.getRoll() != null) {
+            bo.setRoll(dto.getRoll());
+        }
+        if(dto.getGrade() != null) {
+            bo.setGrade(dto.getGrade());
+        }
         return bo;
     }
 
@@ -50,10 +59,4 @@ public class StudentBo {
         return bo;
     }
 
-    public static StudentBo getGradeBo(StudentDto dto){
-        StudentBo bo = new StudentBo();
-        bo.setRoll(dto.getRoll());
-        bo.setName(dto.getName());
-        return bo;
-    }
 }

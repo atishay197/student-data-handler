@@ -34,7 +34,7 @@ public class StudentDto {
         this.name = "";
         this.college = "";
         this.roll = "";
-        this.college = "";
+        this.grade = "";
     }
     public StudentDto(JSONObject studentDetails) throws JSONException{
         this.name = studentDetails.get("name").toString();
