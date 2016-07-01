@@ -39,26 +39,11 @@ public class StudentDto {
         this.roll = "";
         this.grade = "";
     }
-    public StudentDto(JSONObject studentDetails) throws JSONException{
-        if(studentDetails.has("name")) {
-            this.name = studentDetails.get("name").toString();
-        }
-        if(studentDetails.has("college")) {
-            this.college = studentDetails.get("college").toString();
-        }
-        if(studentDetails.has("roll")) {
-            this.roll = studentDetails.get("roll").toString();
-        }
-        if(studentDetails.has("grade")) {
-            this.grade = studentDetails.get("grade").toString();
-        }
-    }
 
-    public StudentDto(StudentBo bo){
+    public StudentDto(StudentDetailsBo bo){
         this.name = bo.getName();
         this.college = bo.getCollege();
-        this.roll = bo.getRoll();
-        this.grade = bo.getGrade();
+        this.roll = bo.getRollString();
     }
 
     public static JSONObject dtoToJSON(StudentDto dto){
