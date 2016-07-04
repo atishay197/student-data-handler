@@ -8,208 +8,285 @@
     <title>Send Requests</title>
 </head>
 <body>
-<br>
-<br>
-<div class="row">
-    <div class="col-md-2">
-        New Student
-    </div>
-    <div class="col-md-3">
-        <script>
-            function submitform() {
-                var fields = {};
-                $("form.submit").find("input").each(function() {
-                    fields[this.name] = $(this).val();
-                });
-                console.log(fields);
-                var redirectURL;
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "http://localhost:9000/storeData", true);
-                xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-                xhr.onload = function () {
-                    if (xhr.readyState === xhr.DONE) {
-                        if (xhr.status === 200) {
-                            console.log(xhr.responseText);
-                            var objJSON = JSON.parse(xhr.responseText);
-                            redirectURL = objJSON.finalURL;
-                            window.open(redirectURL,"_self");
-                        }
-                    }
-                };
-                xhr.send(JSON.stringify(fields));
+<script type="text/javascript">
+    function buildHtmlTable(selector,myList) {
+        var columns = addAllColumnHeaders(selector,myList);
+
+        for (var i = 0 ; i < myList.length ; i++) {
+            var row$ = $('<tr/>');
+            for (var colIndex = 0 ; colIndex < columns.length ; colIndex++) {
+                var cellValue = myList[i][columns[colIndex]];
+
+                if (cellValue == null) { cellValue = ""; }
+
+                row$.append($('<td/>').html(cellValue));
             }
-        </script>
-        <form class="submit" action = "POST">
-            <div class="row">
-                <div class="col-md-3">
-                    Name
-                    </div>
-                <div class="col-md-3">
-                    <input name="name"><br>
-                    </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    College
-                </div>
-                <div class="col-md-3">
-                    <input name="college"><br>
-                </div>
-            </div>
-            <p>
-            <div class="row">
-                <div class="col-md-10">
-                    <button type="button" onclick="submitform()" class="btn btn-primary btn-block">Store Data</button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <div class="col-md-7">
-        Data printed here... Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data
-    </div>
-</div>
-
-
-<p>
-<div class="row">
-    <div class="col-md-2">
-        Student Details
-    </div>
-    <div class="col-md-3">
-        <script>
-        function getData() {
-            var fields = {};
-            $("form.getData").find("input").each(function() {
-                fields[this.name] = $(this).val();
-            });
-            console.log(fields);
-            var redirectURL;
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "http://localhost:9000/getData", true);
-            xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-            xhr.onload = function () {
-                if (xhr.readyState === xhr.DONE) {
-                    if (xhr.status === 200) {
-                        console.log(xhr.responseText);
-                        var objJSON = JSON.parse(xhr.responseText);
-                        redirectURL = objJSON.finalURL;
-                        var details = JSON.parse(objJSON.response);
-                        var urlNew = Object.keys(details).map(function(k) {
-                            return encodeURIComponent(k) + '=' + encodeURIComponent(details[k])
-                        }).join('&')
-                        redirectURL = redirectURL + '?' + urlNew;
-                        console.log(redirectURL);
-                        window.open(redirectURL,"_self");
-                    }
-                }
-            };
-            xhr.send(JSON.stringify(fields));
+            $(selector).append(row$);
         }
-        </script>
-        <form class="getData">
-            <div class="row">
-                <div class="col-md-3">
-                    Name
-                </div>
-                <div class="col-md-3">
-                    <input name="name"><br>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    Roll
-                </div>
-                <div class="col-md-3">
-                    <input name="roll"><br>
-                </div>
-            </div>
-            <p>
-            <div class="row">
-                <div class="col-md-10">
-                    <button type="button" onclick="getData()" class="btn btn-primary btn-block">Get Data</button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <div class="col-md-7">
-        Data printed here...
-    </div>
-</div>
+    }
+    function addAllColumnHeaders(selector,myList)
+    {
+        var columnSet = [];
+        var headerTr$ = $('<tr/>');
 
-<p>
-<div class="row">
-    <div class="col-md-2">
-        Teacher Grading
-    </div>
-    <div class="col-md-3">
-        <script>
-            function submitGrade() {
-                var fields = {};
-                $("form.teacher").find("input").each(function() {
-                    fields[this.name] = $(this).val();
-                });
-                console.log(fields);
-                var redirectURL;
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "http://localhost:9000/submitGrade", true);
-                xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-                xhr.onload = function () {
-                    if (xhr.readyState === xhr.DONE) {
-                        if (xhr.status === 200) {
-                            console.log(xhr.responseText);
-                            var objJSON = JSON.parse(xhr.responseText);
-                            redirectURL = objJSON.finalURL;
-                            window.open(redirectURL,"_self");
-                        }
-                    }
-                };
-                xhr.send(JSON.stringify(fields));
+        for (var i = 0 ; i < myList.length ; i++) {
+            var rowHash = myList[i];
+            for (var key in rowHash) {
+                if ($.inArray(key, columnSet) == -1){
+                    columnSet.push(key);
+                    headerTr$.append($('<th/>').html(key));
+                }
             }
-        </script>
-        <form class="teacher">
+        }
+        $(selector).append(headerTr$);
 
-            <div class="row">
-                <div class="col-md-3">
-                    TeacherID
-                </div>
-                <div class="col-md-3">
-                    <input name="teacherId"><br>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    Roll
-                </div>
-                <div class="col-md-3">
-                    <input name="roll"><br>
-                </div>
-            </div>
-            <p>
-            <div class="row">
-                <div class="col-md-10">
-                    <button type="button" onclick="submitGrade()" class="btn btn-primary btn-block">Grade Student</button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <div class="col-md-7">
-        Data printed here... Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data
-    </div>
-</div>
-
-
-<p>
+        return columnSet;
+    }
+</script>
+<br>
+<br>
 <div class="row">
-    <div class="col-md-6">
-        <form method="GET" action="http://localhost:9000/showAllData">
-            <button class="btn btn-primary btn-block">ShowAllData</button>
-        </form>
-    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+                New Student
+            </div>
+            <div class="col-md-3">
+                <script>
+                    function submitform() {
+                        var fields = {};
+                        $("form.submit").find("input").each(function() {
+                            fields[this.name] = $(this).val();
+                        });
+                        console.log(fields);
+                        var redirectURL;
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "http://localhost:9000/storeData", true);
+                        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                        xhr.onload = function () {
+                            if (xhr.readyState === xhr.DONE) {
+                                if (xhr.status === 200) {
+                                    console.log(xhr.responseText);
+                                    var objJSON = JSON.parse(xhr.responseText);
+                                    redirectURL = objJSON.finalURL;
+                                    window.open(redirectURL,"_self");
+                                }
+                            }
+                        };
+                        xhr.send(JSON.stringify(fields));
+                    }
+                </script>
+                <form class="submit" action = "POST">
+                    <div class="row">
+                        <div class="col-md-3">
+                            Name
+                        </div>
+                        <div class="col-md-3">
+                            <input name="name"><br>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            College
+                        </div>
+                        <div class="col-md-3">
+                            <input name="college"><br>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="button" onclick="submitform()" class="btn btn-primary btn-block">Store Data</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-7" id="storeData">
+                <span>
+                </span>
+            </div>
+        </div>
 
-    <div class="col-md-6">
-        <form method="GET" action="http://localhost:9000/showAllDatas">
-            <button class="btn btn-primary btn-block">ShowAllData-DB</button>
-        </form>
+
+        <br>
+        <div class="row">
+            <div class="col-md-2">
+                Student Details
+            </div>
+            <div class="col-md-3">
+                <script>
+                    function getData() {
+                        var fields = {};
+                        $("form.getData").find("input").each(function() {
+                            fields[this.name] = $(this).val();
+                        });
+                        console.log(fields);
+                        var redirectURL;
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "http://localhost:9000/getData", true);
+                        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                        xhr.onload = function () {
+                            if (xhr.readyState === xhr.DONE) {
+                                if (xhr.status === 200) {
+                                    console.log(xhr.responseText);
+                                    var objJSON = JSON.parse(xhr.responseText);
+                                    redirectURL = objJSON.finalURL;
+                                    var details = JSON.parse(objJSON.response);
+                                    var urlNew = Object.keys(details).map(function(k) {
+                                        return encodeURIComponent(k) + '=' + encodeURIComponent(details[k])
+                                    }).join('&')
+                                    redirectURL = redirectURL + '?' + urlNew;
+                                    console.log(redirectURL);
+                                    window.open(redirectURL,"_self");
+                                }
+                            }
+                        };
+                        xhr.send(JSON.stringify(fields));
+                    }
+                </script>
+                <form class="getData">
+                    <div class="row">
+                        <div class="col-md-3">
+                            Name
+                        </div>
+                        <div class="col-md-3">
+                            <input name="name"><br>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            Roll
+                        </div>
+                        <div class="col-md-3">
+                            <input name="roll"><br>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="button" onclick="getData()" class="btn btn-primary btn-block">Get Data</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-7" id="studentData">
+                <span>
+                </span>
+            </div>
+        </div>
+
+        <br>
+        <div class="row">
+            <div class="col-md-2">
+                Teacher Grading
+            </div>
+            <div class="col-md-3">
+                <script>
+                    function submitGrade() {
+                        var fields = {};
+                        $("form.teacher").find("input").each(function() {
+                            fields[this.name] = $(this).val();
+                        });
+                        console.log(fields);
+                        var redirectURL;
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "http://localhost:9000/submitGrade", true);
+                        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                        xhr.onload = function () {
+                            if (xhr.readyState === xhr.DONE) {
+                                if (xhr.status === 200) {
+                                    console.log(xhr.responseText);
+                                    var objJSON = JSON.parse(xhr.responseText);
+                                    redirectURL = objJSON.finalURL;
+                                    window.open(redirectURL,"_self");
+                                }
+                            }
+                        };
+                        xhr.send(JSON.stringify(fields));
+                    }
+                </script>
+                <form class="teacher">
+                    <div class="row">
+                        <div class="col-md-3">
+                            TeacherID
+                        </div>
+                        <div class="col-md-3">
+                            <input name="teacherId"><br>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            Roll
+                        </div>
+                        <div class="col-md-3">
+                            <input name="roll"><br>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                            <div class="col-sm-12">
+                                <button type="button" onclick="submitGrade()" class="btn btn-primary btn-block">Grade Student</button>
+                            </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-7" id="studentGraded">
+                <span>
+                </span>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div>
+                <div class="col-md-2">
+                    Show Details
+                </div>
+                <script type="text/javascript">
+                    function showAllData(myTable) {
+                        var fields = {};
+                        $("form.teacherId").find("input").each(function() {
+                            fields[this.name] = $(this).val();
+                        });
+                        console.log(fields);
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("GET", "http://localhost:9000/showAllData?teacher=" + fields['teacherId'], true);
+                        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                        xhr.onload = function () {
+                            if (xhr.readyState === xhr.DONE) {
+                                if (xhr.status === 200) {
+                                    console.log(xhr.responseText);
+                                    var objJSON = JSON.parse(xhr.responseText);
+                                    buildHtmlTable(myTable,objJSON);
+                                }
+                            }
+                        };
+                        xhr.send(JSON.stringify(fields));
+                    }
+                </script>
+                <div class="col-md-3">
+                    <form class="teacherId">
+                        <div class="row">
+                            <div class="col-md-3">
+                                TeacherID
+                            </div>
+                            <div class="col-md-3">
+                                <input name="teacherId"><br>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                 <button class="btn btn-primary btn-block" type="button" onclick="showAllData('#allDataTable')">Show All Data</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-7" id="allStudentData">
+                    <table id="allDataTable" border="2" cellpadding="10" style="width:100%">
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

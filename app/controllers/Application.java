@@ -100,19 +100,14 @@ public class Application extends Controller {
             n.put(entry.getKey(), entry.getValue()[0]);
         }
         JSONObject obj = new JSONObject(n);
-        System.out.println(obj.toString());
         String redirect = request().getHeader("referer");
         if(obj != null) {
-            try {
-                return ok(studentDetail.render(obj.toString(),redirect));
-            }
+            try { return ok(studentDetail.render(obj.toString(),redirect)); }
             catch(Exception e){
                 e.printStackTrace();
+                return badRequest("Rendering Error");
             }
         }
-        else{
-            return badRequest("JSON is empty");
-        }
-        return ok("testClass was called");
+        else { return badRequest("JSON is empty"); }
     }
 }

@@ -1,6 +1,7 @@
 package service;
 
-import database.DbFetchTest;
+import database.DbFetch;
+import database.DbStore;
 import objects.StudentDetailsBo;
 import objects.StudentDto;
 import play.db.jpa.Transactional;
@@ -17,16 +18,24 @@ import java.util.List;
 
 public class Student {
 
-    DbFetchTest dbFetchTest;
+    DbFetch dbFetch;
+    DbStore dbStore;
+
     @Inject
-    public Student(DbFetchTest dbFetchTest){
-        this.dbFetchTest = dbFetchTest;
+    public Student(DbFetch dbFetch){
+        this.dbFetch = dbFetch;
     }
+
+    @Inject
+    public Student(DbStore dbStore){
+        this.dbStore = dbStore;
+    }
+
     public StudentDto register(StudentDto dto){
-        //bo = StudentDetailsBo.copyDtoToBo(dto);
-        //StudentDetailsBo bo = dbft.getStudents();
-        //String encryptedRoll = EncryptDecrypt.encrypt(bo.getRollString());
-        //dto.setRoll(encryptedRoll);
+        StudentDetailsBo bo = StudentDetailsBo.copyDtoToBo(dto);
+        bo = dbStore.storeStudent(bo);
+        String encryptedRoll = EncryptDecrypt.encrypt(bo.getRollString());
+        dto.setRoll(encryptedRoll);
         return dto;
     }
 
@@ -50,7 +59,7 @@ public class Student {
     @Transactional
     public List<StudentDto> getAllStudentDetails(){
         List<StudentDto> listStudentDto = new ArrayList();
-        List<StudentDetailsBo> listStudentDetailsBo = dbFetchTest.getStudent();
+        List<StudentDetailsBo> listStudentDetailsBo = dbFetch.getStudent();
         for(Iterator i = listStudentDetailsBo.iterator(); i.hasNext();){
             StudentDetailsBo bo = (StudentDetailsBo)i.next();
             StudentDto dto = new StudentDto(bo);

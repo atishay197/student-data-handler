@@ -5,4 +5,3 @@ POST    /getData                    @controllers.Application.getData
 GET     /home/*roll                 @controllers.Application.showRoll(roll)
 GET     /showDetails                @controllers.Application.showDetails()
 GET     /showAllData                @controllers.Application.showAllData
-GET     /showAllDatas               database.DbFetchTest.getStudents
