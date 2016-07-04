@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import play.db.jpa.Transactional;
 import objects.StudentDto;
-import org.json.JSONException;
 import org.json.JSONObject;
 import play.mvc.*;
 import service.Student;
-import views.html.roll;
+import service.Teacher;
 import views.html.studentDetail;
 
 import java.util.HashMap;
@@ -20,9 +19,11 @@ import static play.libs.Json.toJson;
 public class Application extends Controller {
 
     private final Student student;
+    private final Teacher teacher;
     @Inject
-    public Application(Student student) {
+    public Application(Student student,Teacher teacher) {
         this.student = student;
+        this.teacher = teacher;
     }
 
     public Result index() {
@@ -31,19 +32,17 @@ public class Application extends Controller {
 
     @Transactional
     public Result showAllData(){
-        return ok(toJson(student.getAllStudentDetails()));
+        return ok(toJson(teacher.getAllStudentDetails()));
     }
 
-    public Result storeData() throws JSONException {
+    @Transactional
+    public Result storeData(){
         JsonNode obj = request().body().asJson();
-        String redirect = request().getHeader("referer");
         if(obj != null) {
             StudentDto dto = new StudentDto();
-            dto = fromJson(obj,dto.getClass());
-            //dto = student.register(dto);
+            dto = student.register(fromJson(obj,dto.getClass()));
             String roll = dto.getRoll();
             Map<String,String> m = new HashMap();
-            m.put("finalURL",redirect+"/"+roll);
             m.put("response",roll);
             String content = new JSONObject(m).toString();
             System.out.println(content);
@@ -55,44 +54,37 @@ public class Application extends Controller {
         }
     }
 
+    @Transactional
     public Result getData() {
         JsonNode obj = request().body().asJson();
-
         if(obj != null) {
             try {
                 StudentDto dto = new StudentDto();
                 dto = fromJson(obj,dto.getClass());
-                //dto = student.getStudentDetails(dto);
-                JSONObject dtoJSON = StudentDto.dtoToJSON(dto);
-                Map<String, String> m = new HashMap();
-                m.put("finalURL", "/showDetails");
-                m.put("response", dtoJSON.toString());
-                String content = new JSONObject(m).toString();
-                System.out.println(content);
+                dto = student.getStudentDetails(dto);
+                String content = toJson(dto).toString();
                 response().setContentType("application/json");
                 return ok(content);
             }
             catch(Exception e){
                 e.printStackTrace();
+                return badRequest("Error in Getting Student Details");
             }
         }
         else{
             return badRequest("JSON is empty");
         }
-        return ok("testClass was called");
     }
 
 
+    @Transactional
     public Result submitGrades() {
         System.out.println("Called test class");
         return ok("testClass was called");
     }
 
-    public Result showRoll(String rollNo){
-        String returnURL = request().getHeader("referer");
-        return ok(roll.render(rollNo,returnURL));
-    }
 
+    @Transactional
     public Result showDetails(){
         Map<String,String[]> m = Controller.request().queryString();
         Map<String,String> n = new HashMap();
@@ -100,6 +92,7 @@ public class Application extends Controller {
             n.put(entry.getKey(), entry.getValue()[0]);
         }
         JSONObject obj = new JSONObject(n);
+        System.out.println("Recieved to Show" + obj.toString());
         String redirect = request().getHeader("referer");
         if(obj != null) {
             try { return ok(studentDetail.render(obj.toString(),redirect)); }

@@ -1,11 +1,6 @@
 package objects;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import javax.persistence.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Created by atishay197 on 6/28/16.
@@ -33,19 +28,5 @@ public class StudentDetailsBo {
     public int getRoll(){return roll;}
     public String getRollString(){return Integer.toString(roll);}
     public String getCollege(){return college;}
-
-    public static StudentDetailsBo copyDtoToBo(StudentDto dto){
-        StudentDetailsBo bo = new StudentDetailsBo();
-        if(dto.getName() != null) {
-            bo.setName(dto.getName());
-        }
-        if(dto.getCollege() != null) {
-            bo.setCollege(dto.getCollege());
-        }
-        if(dto.getRoll() != null) {
-            bo.setRoll(Integer.parseInt(dto.getRoll()));
-        }
-        return bo;
-    }
 
 }

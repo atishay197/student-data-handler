@@ -13,10 +13,10 @@ public class EncryptDecrypt {
         return encryptedRoll;
     }
 
-    public static String decrypt(String encryptedRoll)
+    public static int decrypt(String encryptedRoll)
     {
         int keylen = SecretKey.length();
         String roll = encryptedRoll.substring(keylen);
-        return roll;
+        return Integer.parseInt(roll);
     }
 }

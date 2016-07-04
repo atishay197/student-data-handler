@@ -16,6 +16,14 @@ public class DbStore {
 
     @Transactional
     public StudentDetailsBo storeStudent(StudentDetailsBo bo){
-        return bo;
+        try{
+            jpaApi.em().persist(bo);
+            bo = jpaApi.em().find(bo.getClass(),bo.getRoll());
+            return bo;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -42,6 +42,9 @@
 
         return columnSet;
     }
+    function clearTable(selector){
+        $(selector).html(' ');
+    }
 </script>
 <br>
 <br>
@@ -68,8 +71,11 @@
                                 if (xhr.status === 200) {
                                     console.log(xhr.responseText);
                                     var objJSON = JSON.parse(xhr.responseText);
-                                    redirectURL = objJSON.finalURL;
-                                    window.open(redirectURL,"_self");
+                                    var roll = objJSON.response;
+                                    var display = "Your roll number is : " + roll + "<br>This won't be displayed again";
+                                    document.getElementById('storeData').innerHTML = display;
+                                    //redirectURL = objJSON.finalURL;
+                                    //window.open(redirectURL,"_self");
                                 }
                             }
                         };
@@ -95,15 +101,17 @@
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <button type="button" onclick="submitform()" class="btn btn-primary btn-block">Store Data</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-primary btn-block" type="button" onclick="clear('#studentData')">Clear Data</button>
+
                         </div>
                     </div>
                 </form>
             </div>
             <div class="col-md-7" id="storeData">
-                <span>
-                </span>
             </div>
         </div>
 
@@ -115,29 +123,30 @@
             </div>
             <div class="col-md-3">
                 <script>
-                    function getData() {
+                    function getData(mytable) {
                         var fields = {};
                         $("form.getData").find("input").each(function() {
                             fields[this.name] = $(this).val();
                         });
                         console.log(fields);
-                        var redirectURL;
                         var xhr = new XMLHttpRequest();
                         xhr.open("POST", "http://localhost:9000/getData", true);
                         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
                         xhr.onload = function () {
                             if (xhr.readyState === xhr.DONE) {
                                 if (xhr.status === 200) {
-                                    console.log(xhr.responseText);
-                                    var objJSON = JSON.parse(xhr.responseText);
-                                    redirectURL = objJSON.finalURL;
-                                    var details = JSON.parse(objJSON.response);
-                                    var urlNew = Object.keys(details).map(function(k) {
-                                        return encodeURIComponent(k) + '=' + encodeURIComponent(details[k])
-                                    }).join('&')
-                                    redirectURL = redirectURL + '?' + urlNew;
-                                    console.log(redirectURL);
-                                    window.open(redirectURL,"_self");
+                                    var responseText = "[" + xhr.responseText + "]";
+                                    console.log(responseText);
+                                    var objJSON = JSON.parse(responseText);
+                                    buildHtmlTable(mytable,objJSON);
+//                                    redirectURL = objJSON.finalURL;
+//                                    var details = JSON.parse(objJSON.response);
+//                                    var urlNew = Object.keys(details).map(function(k) {
+//                                        return encodeURIComponent(k) + '=' + encodeURIComponent(details[k])
+//                                    }).join('&')
+//                                    redirectURL = redirectURL + '?' + urlNew;
+//                                    console.log(redirectURL);
+//                                    window.open(redirectURL,"_self");
                                 }
                             }
                         };
@@ -163,15 +172,18 @@
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col-md-12">
-                            <button type="button" onclick="getData()" class="btn btn-primary btn-block">Get Data</button>
+                        <div class="col-md-6">
+                            <button type="button" onclick="getData('#studentTable')" class="btn btn-primary btn-block">Get Data</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-primary btn-block" type="button" onclick="clearTable('#studentTable')">Clear Data</button>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="col-md-7" id="studentData">
-                <span>
-                </span>
+                <table id="studentTable" border="2" cellpadding="10" style="width:100%">
+                </table>
             </div>
         </div>
 
@@ -224,15 +236,16 @@
                     </div>
                     <br>
                     <div class="row">
-                            <div class="col-sm-12">
-                                <button type="button" onclick="submitGrade()" class="btn btn-primary btn-block">Grade Student</button>
-                            </div>
+                        <div class="col-sm-6">
+                            <button type="button" onclick="submitGrade()" class="btn btn-primary btn-block">Grade Student</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-primary btn-block" type="button" onclick="clear('#studentGraded')">Clear Data</button>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="col-md-7" id="studentGraded">
-                <span>
-                </span>
             </div>
         </div>
         <br>
@@ -254,8 +267,9 @@
                         xhr.onload = function () {
                             if (xhr.readyState === xhr.DONE) {
                                 if (xhr.status === 200) {
-                                    console.log(xhr.responseText);
-                                    var objJSON = JSON.parse(xhr.responseText);
+                                    var responseText = xhr.responseText;
+                                    console.log(responseText);
+                                    var objJSON = JSON.parse(responseText);
                                     buildHtmlTable(myTable,objJSON);
                                 }
                             }
@@ -275,8 +289,11 @@
                         </div>
                         <br>
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
                                  <button class="btn btn-primary btn-block" type="button" onclick="showAllData('#allDataTable')">Show All Data</button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button class="btn btn-primary btn-block" type="button" onclick="clearTable('#allDataTable')">Clear Data</button>
                             </div>
                         </div>
                     </form>

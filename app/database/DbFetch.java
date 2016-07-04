@@ -9,26 +9,18 @@ import play.mvc.Controller;
 
 import java.util.List;
 
-
-/**
- * Created by atishay197 on 6/30/16.
- */
 public class DbFetch extends Controller{
 
     @Inject public JPAApi jpaApi;
 
     @Transactional(readOnly = true)
     public List<StudentDetailsBo> getStudent(){
-        List<StudentDetailsBo> students = (List<StudentDetailsBo>)jpaApi.em().createQuery("from StudentDetailsBo").getResultList();
-        return students;
+        return (List<StudentDetailsBo>)jpaApi.em().createQuery("from StudentDetailsBo").getResultList();
     }
 
-    @Transactional
-    public StudentDetailsBo studentDetails(StudentDetailsBo bo){
-//        EntityManager em = jpaApi.em();
-//        Query q = em.createNativeQuery("SELECT College FROM StudentDetails WHERE ID = ? AND Name = ?;");
-//        bo.setCollege(q.getParameter(1).toString());
-//        System.out.println("College : " + bo.getCollege());
-        return bo;
+    @Transactional(readOnly = true)
+    public StudentDetailsBo getstudentDetails(StudentDetailsBo bo){
+        System.out.println("Bo Roll : " + bo.getRoll());
+        return jpaApi.em().find(StudentDetailsBo.class,bo.getRoll());
     }
 }
