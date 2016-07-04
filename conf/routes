@@ -2,6 +2,5 @@ GET     /                           @controllers.Application.index
 GET     /home                       @controllers.Assets.at(path="/public/Html",file="MainView.html")
 POST    /storeData                  @controllers.Application.storeData
 POST    /getData                    @controllers.Application.getData
-GET     /home/*roll                 @controllers.Application.showRoll(roll)
-GET     /showDetails                @controllers.Application.showDetails()
-GET     /showAllData                @controllers.Application.showAllData
+POST    /submitGrade                @controllers.Application.storeGrade
+GET     /showAllData/*teacherId     @controllers.Application.showAllData(teacherId)

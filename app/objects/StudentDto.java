@@ -44,15 +44,7 @@ public class StudentDto {
         this.name = bo.getName();
         this.college = bo.getCollege();
         this.roll = bo.getRollString();
-    }
-
-    public static JSONObject dtoToJSON(StudentDto dto){
-        Map<String,String> m = new HashMap();
-        m.put("name",dto.getName());
-        m.put("college",dto.getCollege());
-        m.put("roll",dto.getRoll());
-        m.put("grade",dto.getGrade());
-        return (new JSONObject(m));
+        this.grade = bo.getGrade();
     }
 
 }

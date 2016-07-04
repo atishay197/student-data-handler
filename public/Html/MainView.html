@@ -70,12 +70,17 @@
                             if (xhr.readyState === xhr.DONE) {
                                 if (xhr.status === 200) {
                                     console.log(xhr.responseText);
+                                    clearTable('#storeData');
                                     var objJSON = JSON.parse(xhr.responseText);
                                     var roll = objJSON.response;
                                     var display = "Your roll number is : " + roll + "<br>This won't be displayed again";
                                     document.getElementById('storeData').innerHTML = display;
                                     //redirectURL = objJSON.finalURL;
                                     //window.open(redirectURL,"_self");
+                                }
+                                else if(xhr.status === 500){
+                                    clearTable('#storeData');
+                                    document.getElementById("storeData").innerHTML = "<h2>Wrong Roll number</h2>";
                                 }
                             }
                         };
@@ -105,7 +110,7 @@
                             <button type="button" onclick="submitform()" class="btn btn-primary btn-block">Store Data</button>
                         </div>
                         <div class="col-sm-6">
-                            <button class="btn btn-primary btn-block" type="button" onclick="clear('#studentData')">Clear Data</button>
+                            <button class="btn btn-primary btn-block" type="button" onclick="clearTable('#storeData')">Clear Data</button>
 
                         </div>
                     </div>
@@ -138,15 +143,13 @@
                                     var responseText = "[" + xhr.responseText + "]";
                                     console.log(responseText);
                                     var objJSON = JSON.parse(responseText);
+                                    clearTable(mytable);
+                                    clearTable('#errorDisplayStudent');
                                     buildHtmlTable(mytable,objJSON);
-//                                    redirectURL = objJSON.finalURL;
-//                                    var details = JSON.parse(objJSON.response);
-//                                    var urlNew = Object.keys(details).map(function(k) {
-//                                        return encodeURIComponent(k) + '=' + encodeURIComponent(details[k])
-//                                    }).join('&')
-//                                    redirectURL = redirectURL + '?' + urlNew;
-//                                    console.log(redirectURL);
-//                                    window.open(redirectURL,"_self");
+                                }
+                                else if(xhr.status === 400){
+                                    clearTable(mytable);
+                                    document.getElementById("errorDisplayStudent").innerHTML = "<h2>Wrong Roll number</h2>";
                                 }
                             }
                         };
@@ -154,14 +157,6 @@
                     }
                 </script>
                 <form class="getData">
-                    <div class="row">
-                        <div class="col-md-3">
-                            Name
-                        </div>
-                        <div class="col-md-3">
-                            <input name="name"><br>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-md-3">
                             Roll
@@ -184,6 +179,8 @@
             <div class="col-md-7" id="studentData">
                 <table id="studentTable" border="2" cellpadding="10" style="width:100%">
                 </table>
+                <div id="errorDisplayStudent">
+                </div>
             </div>
         </div>
 
@@ -194,7 +191,7 @@
             </div>
             <div class="col-md-3">
                 <script>
-                    function submitGrade() {
+                    function submitGrade(divChange) {
                         var fields = {};
                         $("form.teacher").find("input").each(function() {
                             fields[this.name] = $(this).val();
@@ -209,8 +206,21 @@
                                 if (xhr.status === 200) {
                                     console.log(xhr.responseText);
                                     var objJSON = JSON.parse(xhr.responseText);
-                                    redirectURL = objJSON.finalURL;
-                                    window.open(redirectURL,"_self");
+                                    var grade = objJSON.grade;
+                                    var roll = objJSON.roll;
+                                    var displayString = "Roll " + roll + " upgraded to " + grade + " grade";
+                                    document.getElementById("studentGraded").innerHTML ="<h3>" +  displayString + "</h3>";
+                                }
+                                else if(xhr.status === 400){
+                                    clearTable('#allDataTable');
+                                    var responseText = xhr.responseText;
+                                    document.getElementById("studentGraded").innerHTML = "<h2>" + responseText + "</h2>";
+                                }
+                                else if(xhr.status === 500){
+                                    document.getElementById("studentGraded").innerHTML = "<h2>" + "Error in DB insertion" + "</h2>";
+                                }
+                                else{
+                                    document.getElementById("studentGraded").innerHTML = "<h2>Error in upgrading Grade</h2>";
                                 }
                             }
                         };
@@ -234,18 +244,27 @@
                             <input name="roll"><br>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            Grade
+                        </div>
+                        <div class="col-md-3">
+                            <input name="grade"><br>
+                        </div>
+                    </div>
                     <br>
                     <div class="row">
                         <div class="col-sm-6">
-                            <button type="button" onclick="submitGrade()" class="btn btn-primary btn-block">Grade Student</button>
+                            <button type="button" onclick="submitGrade('#studentGraded')" class="btn btn-primary btn-block">Grade Student</button>
                         </div>
                         <div class="col-sm-6">
-                            <button class="btn btn-primary btn-block" type="button" onclick="clear('#studentGraded')">Clear Data</button>
+                            <button class="btn btn-primary btn-block" type="button" onclick="clearTable('#studentGraded')">Clear Data</button>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="col-md-7" id="studentGraded">
+
             </div>
         </div>
         <br>
@@ -262,15 +281,30 @@
                         });
                         console.log(fields);
                         var xhr = new XMLHttpRequest();
-                        xhr.open("GET", "http://localhost:9000/showAllData?teacher=" + fields['teacherId'], true);
+                        xhr.open("GET", "http://localhost:9000/showAllData/" + fields['teacherId'], true);
                         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
                         xhr.onload = function () {
                             if (xhr.readyState === xhr.DONE) {
                                 if (xhr.status === 200) {
                                     var responseText = xhr.responseText;
+                                    clearTable('#errorDisplay');
+                                    clearTable(myTable);
                                     console.log(responseText);
                                     var objJSON = JSON.parse(responseText);
                                     buildHtmlTable(myTable,objJSON);
+                                }
+                                else if(xhr.status === 400){
+                                    clearTable('#allDataTable');
+                                    var responseText = xhr.responseText;
+                                    document.getElementById("errorDisplay").innerHTML = "<h2>" + responseText + "</h2>";
+                                }
+                                else if(xhr.status === 404){
+                                    clearTable('#allDataTable');
+                                    document.getElementById("errorDisplay").innerHTML = "<h2>Enter Teacher ID</h2>";
+                                }
+                                else{
+                                    clearTable('#allDataTable');
+                                    document.getElementById("errorDisplay").innerHTML = "<h2>Internal Server Error</h2>";
                                 }
                             }
                         };
@@ -293,7 +327,7 @@
                                  <button class="btn btn-primary btn-block" type="button" onclick="showAllData('#allDataTable')">Show All Data</button>
                             </div>
                             <div class="col-sm-6">
-                                <button class="btn btn-primary btn-block" type="button" onclick="clearTable('#allDataTable')">Clear Data</button>
+                                <button class="btn btn-primary btn-block" type="button" onclick="clearTable('#allDataTable');clearTable('#errorDisplay')">Clear Data</button>
                             </div>
                         </div>
                     </form>
@@ -301,6 +335,8 @@
                 <div class="col-md-7" id="allStudentData">
                     <table id="allDataTable" border="2" cellpadding="10" style="width:100%">
                     </table>
+                    <div id="errorDisplay">
+                    </div>
                 </div>
             </div>
         </div>

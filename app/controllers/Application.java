@@ -2,15 +2,17 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import objects.TeacherDto;
 import play.db.jpa.Transactional;
 import objects.StudentDto;
 import org.json.JSONObject;
 import play.mvc.*;
 import service.Student;
 import service.Teacher;
-import views.html.studentDetail;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static play.libs.Json.fromJson;
@@ -31,8 +33,12 @@ public class Application extends Controller {
     }
 
     @Transactional
-    public Result showAllData(){
-        return ok(toJson(teacher.getAllStudentDetails()));
+    public Result showAllData(String teacherId){
+        List<StudentDto> studentDtoList= teacher.getAllStudentDetails(teacherId);
+        if(studentDtoList == null){
+            return badRequest("Invalid Teacher Id");
+        }
+        return ok(toJson(studentDtoList));
     }
 
     @Transactional
@@ -49,9 +55,7 @@ public class Application extends Controller {
             response().setContentType("application/json");
             return ok(content);
         }
-        else{
-            return badRequest("JSON is empty");
-        }
+        return badRequest("JSON is empty");
     }
 
     @Transactional
@@ -76,31 +80,30 @@ public class Application extends Controller {
         }
     }
 
-
     @Transactional
-    public Result submitGrades() {
-        System.out.println("Called test class");
-        return ok("testClass was called");
-    }
-
-
-    @Transactional
-    public Result showDetails(){
-        Map<String,String[]> m = Controller.request().queryString();
-        Map<String,String> n = new HashMap();
-        for (Map.Entry<String, String[]> entry: m.entrySet()) {
-            n.put(entry.getKey(), entry.getValue()[0]);
-        }
-        JSONObject obj = new JSONObject(n);
-        System.out.println("Recieved to Show" + obj.toString());
-        String redirect = request().getHeader("referer");
+    public Result storeGrade() {
+        JsonNode obj = request().body().asJson();
         if(obj != null) {
-            try { return ok(studentDetail.render(obj.toString(),redirect)); }
+            try {
+                TeacherDto dto = new TeacherDto();
+                dto = fromJson(obj,dto.getClass());
+                dto = teacher.setStudentGrade(dto);
+                if(dto == null){
+                    return badRequest("Teacher ID is not valid");
+                }
+                else {
+                    String content = toJson(dto).toString();
+                    response().setContentType("application/json");
+                    return ok(content);
+                }
+            }
             catch(Exception e){
                 e.printStackTrace();
-                return badRequest("Rendering Error");
+                return badRequest("Error in Getting Student Details");
             }
         }
-        else { return badRequest("JSON is empty"); }
+        else{
+            return badRequest("JSON is empty");
+        }
     }
 }

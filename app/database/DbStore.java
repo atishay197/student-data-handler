@@ -2,10 +2,10 @@ package database;
 
 import com.google.inject.Inject;
 import objects.StudentDetailsBo;
+import objects.StudentGradeBo;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
 
-import java.util.List;
 
 /**
  * Created by atishay197 on 7/4/16.
@@ -22,6 +22,19 @@ public class DbStore {
             return bo;
         }
         catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Transactional
+    public StudentGradeBo storeGrade(StudentGradeBo bo){
+        try {
+            jpaApi.em().merge(bo);
+            bo = jpaApi.em().find(bo.getClass(), bo.getRoll());
+            return bo;
+        }
+        catch (Exception e){
             e.printStackTrace();
             return null;
         }
