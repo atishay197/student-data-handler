@@ -72,7 +72,7 @@
                                     console.log(xhr.responseText);
                                     clearTable('#storeData');
                                     var objJSON = JSON.parse(xhr.responseText);
-                                    var roll = objJSON.response;
+                                    var roll = objJSON.roll;
                                     var display = "Your roll number is : " + roll + "<br>This won't be displayed again";
                                     document.getElementById('storeData').innerHTML = display;
                                     //redirectURL = objJSON.finalURL;
@@ -171,7 +171,7 @@
                             <button type="button" onclick="getData('#studentTable')" class="btn btn-primary btn-block">Get Data</button>
                         </div>
                         <div class="col-sm-6">
-                            <button class="btn btn-primary btn-block" type="button" onclick="clearTable('#studentTable')">Clear Data</button>
+                            <button class="btn btn-primary btn-block" type="button" onclick="clearTable('#studentTable');clearTable('#errorDisplayStudent')">Clear Data</button>
                         </div>
                     </div>
                 </form>

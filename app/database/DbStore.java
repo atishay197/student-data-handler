@@ -17,8 +17,7 @@ public class DbStore {
     @Transactional
     public StudentDetailsBo storeStudent(StudentDetailsBo bo){
         try{
-            jpaApi.em().persist(bo);
-            bo = jpaApi.em().find(bo.getClass(),bo.getRoll());
+            bo = jpaApi.em().merge(bo);
             return bo;
         }
         catch(Exception e){

@@ -48,9 +48,7 @@ public class Student {
     @Transactional
     public StudentDto register(StudentDto dto){
         StudentDetailsBo bo = new StudentDetailsBo();
-        System.out.println("DTO Name : " + dto.getName() + " College : " + dto.getCollege());
         BeanUtils.copyProperties(dto,bo);
-        System.out.println("BO  Name : " + bo.getName() + " College : " + bo.getCollege());
         bo = dbStore.storeStudent(bo);
         String encryptedRoll = EncryptDecrypt.encrypt(bo.getRollString());
         dto.setRoll(encryptedRoll);

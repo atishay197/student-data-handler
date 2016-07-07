@@ -11,7 +11,6 @@ import service.Student;
 import service.Teacher;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ public class Application extends Controller {
             dto = student.register(fromJson(obj,dto.getClass()));
             String roll = dto.getRoll();
             Map<String,String> m = new HashMap();
-            m.put("response",roll);
+            m.put("roll",roll);
             String content = new JSONObject(m).toString();
             System.out.println(content);
             response().setContentType("application/json");
