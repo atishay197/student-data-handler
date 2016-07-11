@@ -34,7 +34,6 @@ public class DbFetch extends Controller{
 
     @Transactional(readOnly = true)
     public StudentDetailsBo getstudentDetails(StudentDetailsBo bo){
-        System.out.println("Bo Roll : " + bo.getRoll());
         return jpaApi.em().find(StudentDetailsBo.class,bo.getRoll());
     }
 }

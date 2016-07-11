@@ -2,6 +2,7 @@ package service;
 
 import database.DbFetch;
 import database.DbStore;
+import exceptions.InvalidTeacherException;
 import objects.StudentDetailsBo;
 import objects.StudentDto;
 import objects.StudentGradeBo;
@@ -31,7 +32,7 @@ public class Teacher {
     }
 
     @Transactional
-    public List<StudentDto> getAllStudentDetails(String teacherId){
+    public List<StudentDto> getAllStudentDetails(String teacherId) throws InvalidTeacherException{
         if(teacherisValid(teacherId)) {
             List<StudentDto> listStudentDto = new ArrayList();
             List<StudentDetailsBo> listStudentDetailsBo = dbFetch.getStudent();
@@ -48,7 +49,7 @@ public class Teacher {
     }
 
     @Transactional
-    public TeacherDto setStudentGrade(TeacherDto dto){
+    public TeacherDto setStudentGrade(TeacherDto dto) throws InvalidTeacherException{
         if(teacherisValid(dto.getTeacherId())) {
             StudentGradeBo bo = new StudentGradeBo();
             BeanUtils.copyProperties(dto,bo);
@@ -61,10 +62,10 @@ public class Teacher {
         }
     }
 
-    public boolean teacherisValid(String teacherId){
+    public boolean teacherisValid(String teacherId) throws InvalidTeacherException{
         if(teacherId.equals("1"))
             return true;
         else
-            return false;
+            throw new InvalidTeacherException();
     }
 }

@@ -2,8 +2,9 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
-import objects.TeacherDto;
+import exceptions.InvalidTeacherException;
 import play.db.jpa.Transactional;
+import objects.TeacherDto;
 import objects.StudentDto;
 import org.json.JSONObject;
 import play.mvc.*;
@@ -33,25 +34,29 @@ public class Application extends Controller {
 
     @Transactional
     public Result showAllData(String teacherId){
-        List<StudentDto> studentDtoList= teacher.getAllStudentDetails(teacherId);
-        if(studentDtoList == null){
-            return badRequest("Invalid Teacher Id");
+        try {
+            List<StudentDto> studentDtoList = teacher.getAllStudentDetails(teacherId);
+            if(studentDtoList == null){
+                return badRequest("Invalid Teacher Id");
+            }
+            return ok(toJson(studentDtoList));
         }
-        return ok(toJson(studentDtoList));
+        catch(InvalidTeacherException e){
+            return badRequest("Teacher ID is invalid From Controller");
+        }
+
     }
 
     @Transactional
     public Result storeData(){
         JsonNode obj = request().body().asJson();
         if(obj != null) {
-            StudentDto dto = new StudentDto();
-            dto = student.register(fromJson(obj,dto.getClass()));
+            StudentDto dto = student.register(fromJson(obj,StudentDto.class));
             String roll = dto.getRoll();
             Map<String,String> m = new HashMap();
             m.put("roll",roll);
             String content = new JSONObject(m).toString();
             System.out.println(content);
-            response().setContentType("application/json");
             return ok(content);
         }
         return badRequest("JSON is empty");
@@ -62,11 +67,9 @@ public class Application extends Controller {
         JsonNode obj = request().body().asJson();
         if(obj != null) {
             try {
-                StudentDto dto = new StudentDto();
-                dto = fromJson(obj,dto.getClass());
+                StudentDto dto = fromJson(obj,StudentDto.class);
                 dto = student.getStudentDetails(dto);
                 String content = toJson(dto).toString();
-                response().setContentType("application/json");
                 return ok(content);
             }
             catch(Exception e){
@@ -84,15 +87,13 @@ public class Application extends Controller {
         JsonNode obj = request().body().asJson();
         if(obj != null) {
             try {
-                TeacherDto dto = new TeacherDto();
-                dto = fromJson(obj,dto.getClass());
+                TeacherDto dto = fromJson(obj,TeacherDto.class);
                 dto = teacher.setStudentGrade(dto);
                 if(dto == null){
                     return badRequest("Teacher ID is not valid");
                 }
                 else {
                     String content = toJson(dto).toString();
-                    response().setContentType("application/json");
                     return ok(content);
                 }
             }

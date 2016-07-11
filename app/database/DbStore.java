@@ -30,7 +30,7 @@ public class DbStore {
     public StudentGradeBo storeGrade(StudentGradeBo bo){
         try {
             jpaApi.em().merge(bo);
-            bo = jpaApi.em().find(bo.getClass(), bo.getRoll());
+            bo = jpaApi.em().find(StudentGradeBo.class, bo.getRoll());
             return bo;
         }
         catch (Exception e){
